@@ -1,22 +1,48 @@
-node {
-    stage('git clone') {
-       git branch: 'main', changelog: false, credentialsId: '85e4c59d-e692-404b-9827-8d4251656f10', poll: false, url: 'https://github.com/pmnidhi/repo.git'
-    }
-    stage('mvn clean') {
-       sh 'mvn clean'
-    }
-	stage('sonar scan') {
-        sh 'mvn sonar:sonar -Dsonar.projectKey=Project1 -Dsonar.host.url=http://54.92.200.27:9000 -Dsonar.login=93663165115dd671c54b372c8b1b554bedda4345'
-    }
-	stage('mvn validate') {
-       sh 'mvn validate'
-    }
-	stage('mvn test ') {
-       sh 'mvn test'
-    }
-	stage('mvn package') {
-       sh 'mvn package'
-    }
-	
+pipeline {
+     agent any
+	 tools {
+	   maven 'Maven 3.0.5'
+	 }
+	 stages {
+	    stage('maven version') {
+		    steps {
+			   sh 'mvn --version'
+			}
+		}
+	    stage('Git Clone') {
+		    steps{
+			   git branch: 'main', changelog: false, credentialsId: '8b134f35-1b6c-4996-9e9e-3962acaccf5b', poll: false, url: 'https://github.com/pmnidhi/repo_july.git'
+			}
+	    }
+	    stage('list content') {
+	        steps {
+	            sh 'ls -l'
+	        }
+	    }
+		stage('maven clean') {
+		    steps {
+			   sh 'mvn clean'
+			}
+	    }
+		stage('maven validate') {
+		    steps {
+			   sh 'mvn validate'
+			}
+	    }
+		stage('maven test') {
+		    steps {
+			   sh 'mvn test'
+			}
+	    }
+		stage('maven package') {
+		    steps {
+			   sh 'mvn package'
+			}
+	    }
+		stage('maven deploy') {
+		    steps {
+			   sh 'mvn deploy'
+			}
+	    }
+	}
 }
-
